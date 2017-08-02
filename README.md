@@ -1,1 +1,1 @@
-# vue-components
+# Vue components for general uses.
