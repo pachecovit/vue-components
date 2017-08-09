@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'feedBack',
+    name: 'modalAlert',
     props: {
       title: {
         type: String,
@@ -61,8 +61,8 @@
 
     data () {
       return {
-        visible: false,
-        is_open: false,
+        visible: true,
+        is_open: true,
         is_bouncing: false,
         tabs: [],
 
@@ -94,9 +94,9 @@
 
       overlay_classes () {
         return [
-          'simple-modal-overlay',
+          'modalert-modal-overlay',
           'theme-' + this.overlayTheme,
-          'simple-modal-clickable',
+          'modalert-modal-clickable',
           {
             'is-visible': this.visible,
             blocking: this.blocking
@@ -106,7 +106,7 @@
 
       modal_classes () {
         return [
-          'simple-modal',
+          'modalert-modal',
           'theme-' + this.modalTheme,
           {
             'has-title': this.has_title,
@@ -114,7 +114,7 @@
             'has-content': this.has_content,
             'has-icon': this.icon,
             'is-visible': this.visible,
-            'simple-alert': (this.icon && !this.has_tabs) || (!this.icon && !this.title && !this.$slots.title),
+            'modalert-alert': (this.icon && !this.has_tabs) || (!this.icon && !this.title && !this.$slots.title),
             bounce: this.is_bouncing
           }
         ]
@@ -169,7 +169,7 @@
         document.body.style.overflow = this.backups.body.overflow
       },
       _onOverlayClick (event) {
-        if (!event.target.classList || event.target.classList.contains('simple-modal-clickable')) {
+        if (!event.target.classList || event.target.classList.contains('modalert-modal-clickable')) {
           if (this.blocking) {
             if (this.pulseOnBlock) this.bounce()
           } else {
@@ -192,7 +192,7 @@
       },
       _getClassesForTab (tab) {
         return [
-          'simple-modal-tab',
+          'modalert-modal-tab',
 
           {
             active: tab.active,
@@ -209,8 +209,8 @@
             setTimeout(() => {
               this._applyClasses(this.$refs.icon_success, {
                 '': [ 'animate' ],
-                '.simple-modal-tip': [ 'animateSuccessTip' ],
-                '.simple-modal-long': [ 'animateSuccessLong' ]
+                '.modalert-modal-tip': [ 'animateSuccessTip' ],
+                '.modalert-modal-long': [ 'animateSuccessLong' ]
               })
             }, 80)
 
@@ -219,8 +219,8 @@
           case 'warning':
             this._applyClasses(this.$refs.icon_warning, {
               '': [ 'pulseWarning' ],
-              '.simple-modal-body': [ 'pulseWarningIns' ],
-              '.simple-modal-dot': [ 'pulseWarningIns' ]
+              '.modalert-modal-body': [ 'pulseWarningIns' ],
+              '.modalert-modal-dot': [ 'pulseWarningIns' ]
             })
 
             break
@@ -229,7 +229,7 @@
             setTimeout(() => {
               this._applyClasses(this.$refs.icon_error, {
                 '': [ 'animateErrorIcon' ],
-                '.simple-modal-x-mark': [ 'animateXMark' ]
+                '.modalert-modal-x-mark': [ 'animateXMark' ]
               })
             }, 80)
 
@@ -258,26 +258,26 @@
 <template>
   <div :class="overlay_classes" v-show="is_open" v-on:click="_onOverlayClick">
     <div :class="modal_classes">
-      <div class="simple-box-actions">
+      <div class="modalert-box-actions">
         <!-- Custom Actions -->
         <slot name="box-action"></slot>
 
         <!-- Close Button -->
-        <div class="simple-action-close" v-on:click="close" v-if="!hideCloseButton">
+        <div class="modalert-action-close" v-on:click="close" v-if="!hideCloseButton">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#292c34" /></svg>
         </div>
       </div>
 
       <!-- Title: Housing the title and tabs, if no title is present -->
-      <div class="simple-title" v-if="has_title || has_tabs">
+      <div class="modalert-title" v-if="has_title || has_tabs">
         <!-- Tabs but no title -->
         <template v-if="has_tabs && !has_title">
-          <ul class="simple-modal-tabs">
+          <ul class="modalert-modal-tabs">
             <li v-for="tab in tabs" :class="_getClassesForTab(tab)">
               <a href="#" v-on:click.prevent="_changeTab(tab)">
-                <div class="simple-modal-valign">
-                  <span v-if="tab.icon" v-html="tab.icon" class="simple-modal-tab-icon" />
-                  <span class="simple-modal-tab-title">{{ tab.title }}</span>
+                <div class="modalert-modal-valign">
+                  <span v-if="tab.icon" v-html="tab.icon" class="modalert-modal-tab-icon" />
+                  <span class="modalert-modal-tab-title">{{ tab.title }}</span>
                 </div>
               </a>
             </li>
@@ -292,52 +292,52 @@
       </div>
 
       <!-- Tabs: If title AND tabs are present -->
-      <ul class="simple-modal-tabs" v-if="has_title && has_tabs">
+      <ul class="modalert-modal-tabs" v-if="has_title && has_tabs">
         <li v-for="tab in tabs" :class="_getClassesForTab(tab)">
           <a href="#" v-on:click.prevent="_changeTab(tab)">
-            <div class="simple-modal-valign">
-              <span v-if="tab.icon" v-html="tab.icon" class="simple-modal-tab-icon" />
-              <span class="simple-modal-tab-title">{{ tab.title }}</span>
+            <div class="modalert-modal-valign">
+              <span v-if="tab.icon" v-html="tab.icon" class="modalert-modal-tab-icon" />
+              <span class="modalert-modal-tab-title">{{ tab.title }}</span>
             </div>
           </a>
         </li>
       </ul>
 
       <!-- Content: Wrapper -->
-      <div class="simple-content" ref="content">
+      <div class="modalert-content" ref="content">
         <!-- Icon: Error -->
-        <div class="simple-modal-icon simple-modal-error" v-if="icon == 'error'" ref="icon_error">
-          <span class="simple-modal-x-mark">
-            <span class="simple-modal-line simple-modal-left"></span>
-            <span class="simple-modal-line simple-modal-right"></span>
+        <div class="modalert-modal-icon modalert-modal-error" v-if="icon == 'error'" ref="icon_error">
+          <span class="modalert-modal-x-mark">
+            <span class="modalert-modal-line modalert-modal-left"></span>
+            <span class="modalert-modal-line modalert-modal-right"></span>
           </span>
         </div>
 
         <!-- Icon: Warning -->
-        <div class="simple-modal-icon simple-modal-warning" v-if="icon == 'warning'" ref="icon_warning">
-          <span class="simple-modal-body"></span>
-          <span class="simple-modal-dot"></span>
+        <div class="modalert-modal-icon modalert-modal-warning" v-if="icon == 'warning'" ref="icon_warning">
+          <span class="modalert-modal-body"></span>
+          <span class="modalert-modal-dot"></span>
         </div>
 
         <!-- Icon: Info -->
-        <div class="simple-modal-icon simple-modal-info" v-if="icon == 'info'" ref="icon_info"></div>
+        <div class="modalert-modal-icon modalert-modal-info" v-if="icon == 'info'" ref="icon_info"></div>
 
         <!-- Icon: Success -->
-        <div class="simple-modal-icon simple-modal-success" v-if="icon == 'success'" ref="icon_success">
-          <span class="simple-modal-line simple-modal-tip"></span>
-          <span class="simple-modal-line simple-modal-long"></span>
-          <div class="simple-modal-placeholder"></div>
-          <div class="simple-modal-fix"></div>
+        <div class="modalert-modal-icon modalert-modal-success" v-if="icon == 'success'" ref="icon_success">
+          <span class="modalert-modal-line modalert-modal-tip"></span>
+          <span class="modalert-modal-line modalert-modal-long"></span>
+          <div class="modalert-modal-placeholder"></div>
+          <div class="modalert-modal-fix"></div>
         </div>
 
         <!-- Actual Content -->
-        <div class="simple-content-content" v-if="$slots.default">
+        <div class="modalert-content-content" v-if="$slots.default">
           <slot></slot>
         </div>
       </div>
 
       <!-- Buttons -->
-      <div class="simple-buttons" v-if="$slots.button">
+      <div class="modalert-buttons" v-if="$slots.button">
         <slot name="button"></slot>
       </div>
     </div>
@@ -419,7 +419,7 @@
     animation: animateSuccessLong 0.75s;
   }
 
-  .simple-modal-icon.simple-modal-success.animate::after {
+  .modalert-modal-icon.modalert-modal-success.animate::after {
     animation: rotatePlaceholder 4.25s ease-in;
   }
 
@@ -499,7 +499,7 @@
     }
   }
 
-  .simple-modal-icon {
+  .modalert-modal-icon {
     position: relative;
     width: 80px;
     height: 80px;
@@ -510,16 +510,16 @@
     box-sizing: content-box;
   }
 
-  .simple-modal-icon.simple-modal-error {
+  .modalert-modal-icon.modalert-modal-error {
     border-color: #F44336;
   }
 
-  .simple-modal-icon.simple-modal-error .simple-modal-x-mark {
+  .modalert-modal-icon.modalert-modal-error .modalert-modal-x-mark {
     position: relative;
     display: block;
   }
 
-  .simple-modal-icon.simple-modal-error .simple-modal-line {
+  .modalert-modal-icon.modalert-modal-error .modalert-modal-line {
     display: block;
     position: absolute;
     top: 37px;
@@ -529,21 +529,21 @@
     border-radius: 2px;
   }
 
-  .simple-modal-icon.simple-modal-error .simple-modal-line.simple-modal-left {
+  .modalert-modal-icon.modalert-modal-error .modalert-modal-line.modalert-modal-left {
     transform: rotate(45deg);
     left: 17px;
   }
 
-  .simple-modal-icon.simple-modal-error .simple-modal-line.simple-modal-right {
+  .modalert-modal-icon.modalert-modal-error .modalert-modal-line.modalert-modal-right {
     transform: rotate(-45deg);
     right: 16px;
   }
 
-  .simple-modal-icon.simple-modal-warning {
+  .modalert-modal-icon.modalert-modal-warning {
     border-color: #FF9800;
   }
 
-  .simple-modal-icon.simple-modal-warning .simple-modal-body {
+  .modalert-modal-icon.modalert-modal-warning .modalert-modal-body {
     position: absolute;
     width: 5px;
     height: 47px;
@@ -554,7 +554,7 @@
     background-color: #FF9800;
   }
 
-  .simple-modal-icon.simple-modal-warning .simple-modal-dot {
+  .modalert-modal-icon.modalert-modal-warning .modalert-modal-dot {
     position: absolute;
     left: 50%;
     bottom: 10px;
@@ -565,11 +565,11 @@
     background-color: #FF9800;
   }
 
-  .simple-modal-icon.simple-modal-info {
+  .modalert-modal-icon.modalert-modal-info {
     border-color: #039BE5;
   }
 
-  .simple-modal-icon.simple-modal-info::before {
+  .modalert-modal-icon.modalert-modal-info::before {
     content: '';
     position: absolute;
     width: 5px;
@@ -581,7 +581,7 @@
     background-color: #039BE5;
   }
 
-  .simple-modal-icon.simple-modal-info::after {
+  .modalert-modal-icon.modalert-modal-info::after {
     content: '';
     position: absolute;
     width: 7px;
@@ -592,12 +592,12 @@
     background-color: #039BE5;
   }
 
-  .simple-modal-icon.simple-modal-success {
+  .modalert-modal-icon.modalert-modal-success {
     border-color: #4CAF50;
   }
 
-  .simple-modal-icon.simple-modal-success::before,
-  .simple-modal-icon.simple-modal-success::after {
+  .modalert-modal-icon.modalert-modal-success::before,
+  .modalert-modal-icon.modalert-modal-success::after {
     content: '';
     position: absolute;
     border-radius: 40px;
@@ -607,7 +607,7 @@
     transform: rotate(45deg);
   }
 
-  .simple-modal-icon.simple-modal-success::before {
+  .modalert-modal-icon.modalert-modal-success::before {
     border-radius: 120px 0 0 120px;
     top: -7px;
     left: -33px;
@@ -616,7 +616,7 @@
     transform-origin: 60px 60px;
   }
 
-  .simple-modal-icon.simple-modal-success::after {
+  .modalert-modal-icon.modalert-modal-success::after {
     border-radius: 0 120px 120px 0;
     top: -11px;
     left: 30px;
@@ -625,7 +625,7 @@
     transform-origin: 0px 60px;
   }
 
-  .simple-modal-icon.simple-modal-success .simple-modal-placeholder {
+  .modalert-modal-icon.modalert-modal-success .modalert-modal-placeholder {
     box-sizing: content-box;
     position: absolute;
     left: -4px;
@@ -637,7 +637,7 @@
     border-radius: 50%;
   }
 
-  .simple-modal-icon.simple-modal-success .simple-modal-fix {
+  .modalert-modal-icon.modalert-modal-success .modalert-modal-fix {
     position: absolute;
     left: 28px;
     top: 8px;
@@ -648,7 +648,7 @@
     transform: rotate(-45deg);
   }
 
-  .simple-modal-icon.simple-modal-success .simple-modal-line {
+  .modalert-modal-icon.modalert-modal-success .modalert-modal-line {
     display: block;
     position: absolute;
     z-index: 2;
@@ -657,21 +657,21 @@
     border-radius: 2px;
   }
 
-  .simple-modal-icon.simple-modal-success .simple-modal-line.simple-modal-tip {
+  .modalert-modal-icon.modalert-modal-success .modalert-modal-line.modalert-modal-tip {
     width: 25px;
     left: 14px;
     top: 46px;
     transform: rotate(45deg);
   }
 
-  .simple-modal-icon.simple-modal-success .simple-modal-line.simple-modal-long {
+  .modalert-modal-icon.modalert-modal-success .modalert-modal-line.modalert-modal-long {
     width: 47px;
     right: 8px;
     top: 38px;
     transform: rotate(-45deg);
   }
 
-  .simple-modal-icon.simple-modal-custom {
+  .modalert-modal-icon.modalert-modal-custom {
     border-radius: 0;
     border: none;
     background-size: contain;
@@ -679,13 +679,13 @@
     background-repeat: no-repeat;
   }
 
-  .simple-modal.theme-dark .simple-modal-icon.simple-modal-success::before,
-  .simple-modal.theme-dark .simple-modal-icon.simple-modal-success::after,
-  .simple-modal.theme-dark .simple-modal-icon.simple-modal-success .simple-modal-fix {
+  .modalert-modal.theme-dark .modalert-modal-icon.modalert-modal-success::before,
+  .modalert-modal.theme-dark .modalert-modal-icon.modalert-modal-success::after,
+  .modalert-modal.theme-dark .modalert-modal-icon.modalert-modal-success .modalert-modal-fix {
     background-color: #182028;
   }
 
-  .simple-modal-overlay {
+  .modalert-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -701,15 +701,15 @@
     -webkit-perspective: 500px;
   }
 
-  .simple-modal-overlay.theme-dark {
+  .modalert-modal-overlay.theme-dark {
     background: rgba(24, 32, 40, 0.94);
   }
 
-  .simple-modal-overlay.is-visible {
+  .modalert-modal-overlay.is-visible {
     opacity: 1;
   }
 
-  .simple-modal {
+  .modalert-modal {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     background: #fff;
@@ -730,13 +730,13 @@
     transition-timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
   }
 
-  .simple-modal .simple-box-actions {
+  .modalert-modal .modalert-box-actions {
     position: absolute;
     top: 12px;
     right: 12px;
   }
 
-  .simple-modal .simple-box-actions .simple-action-close {
+  .modalert-modal .modalert-box-actions .modalert-action-close {
     display: inline-block;
     cursor: pointer;
     color: #222C38;
@@ -747,30 +747,30 @@
     border-radius: 50%;
   }
 
-  .simple-modal .simple-box-actions .simple-action-close svg {
+  .modalert-modal .modalert-box-actions .modalert-action-close svg {
     width: 24px;
     height: 24px;
     vertical-align: middle;
     margin-top: -2px;
   }
 
-  .simple-modal .simple-box-actions .simple-action-close svg path,
-  .simple-modal .simple-box-actions .simple-action-close svg polygon,
-  .simple-modal .simple-box-actions .simple-action-close svg rect,
-  .simple-modal .simple-box-actions .simple-action-close svg circle {
+  .modalert-modal .modalert-box-actions .modalert-action-close svg path,
+  .modalert-modal .modalert-box-actions .modalert-action-close svg polygon,
+  .modalert-modal .modalert-box-actions .modalert-action-close svg rect,
+  .modalert-modal .modalert-box-actions .modalert-action-close svg circle {
     fill: currentColor;
   }
 
-  .simple-modal .simple-box-actions .simple-action-close svg {
+  .modalert-modal .modalert-box-actions .modalert-action-close svg {
     fill: currentColor;
   }
 
-  .simple-modal .simple-box-actions .simple-action-close:hover {
+  .modalert-modal .modalert-box-actions .modalert-action-close:hover {
     background: #039BE5;
     color: #fff;
   }
 
-  .simple-modal .simple-title {
+  .modalert-modal .modalert-title {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -781,7 +781,7 @@
     padding-right: 64px;
   }
 
-  .simple-modal .simple-title>h2 {
+  .modalert-modal .modalert-title>h2 {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -790,7 +790,7 @@
     font-size: 22px;
   }
 
-  .simple-modal ul.simple-modal-tabs {
+  .modalert-modal ul.modalert-modal-tabs {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -802,12 +802,12 @@
     overflow-x: auto;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab {
     display: block;
     height: 100%;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -821,52 +821,52 @@
     height: 100%;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-title {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-title {
     display: block;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon {
     display: block;
     line-height: 1.0;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img {
     width: 16px;
     height: 16px;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg path,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg polygon,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg rect,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg circle,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img path,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img polygon,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img rect,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img circle {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg path,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg polygon,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg rect,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg circle,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img path,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img polygon,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img rect,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img circle {
     fill: currentColor;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg,
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg,
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img {
     fill: currentColor;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon+span.simple-modal-tab-title {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon+span.modalert-modal-tab-title {
     line-height: 1.0;
     margin-top: 8px;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab:first-child a {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab:first-child a {
     padding-left: 32px;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab.active a {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab.active a {
     font-weight: 600;
     color: #039BE5;
   }
 
-  .simple-modal ul.simple-modal-tabs li.simple-modal-tab.disabled a {
+  .modalert-modal ul.modalert-modal-tabs li.modalert-modal-tab.disabled a {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
@@ -875,38 +875,38 @@
     color: #999;
   }
 
-  .simple-modal.has-tabs:not(.has-title) .simple-title {
+  .modalert-modal.has-tabs:not(.has-title) .modalert-title {
     height: 84px;
     line-height: 84px;
   }
 
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs {
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs {
     width: 100%;
     height: 48px;
     margin: 0;
     border-bottom: 1px solid #eaeaea;
   }
 
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs li.simple-modal-tab a {
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs li.modalert-modal-tab a {
     margin-top: -4px;
   }
 
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon {
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon {
     display: inline-block;
   }
 
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon svg,
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-icon img {
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon svg,
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-icon img {
     vertical-align: middle;
     margin-top: -2px;
     margin-right: 8px;
   }
 
-  .simple-modal.has-tabs.has-title ul.simple-modal-tabs li.simple-modal-tab a span.simple-modal-tab-title {
+  .modalert-modal.has-tabs.has-title ul.modalert-modal-tabs li.modalert-modal-tab a span.modalert-modal-tab-title {
     display: inline-block;
   }
 
-  .simple-modal .simple-content {
+  .modalert-modal .modalert-content {
     display: flex;
     align-items: center;
     padding-left: 32px;
@@ -916,19 +916,19 @@
     line-height: 1.5;
   }
 
-  .simple-modal .simple-content .simple-content-content {
+  .modalert-modal .modalert-content .modalert-content-content {
     flex-grow: 1;
   }
 
-  .simple-modal .simple-content .simple-modal-tab:not(.active) {
+  .modalert-modal .modalert-content .modalert-modal-tab:not(.active) {
     display: none;
   }
 
-  .simple-modal .simple-content .simple-modal-icon {
+  .modalert-modal .modalert-content .modalert-modal-icon {
     margin-bottom: 36px;
   }
 
-  .simple-modal .simple-buttons {
+  .modalert-modal .modalert-buttons {
     text-align: right;
     padding-left: 20px;
     padding-right: 20px;
@@ -936,11 +936,11 @@
     padding-bottom: 12px;
   }
 
-  .simple-modal .simple-content+.simple-buttons {
+  .modalert-modal .modalert-content+.modalert-buttons {
     border-top: 1px solid #eaeaea;
   }
 
-  .simple-modal.simple-alert .simple-content {
+  .modalert-modal.modalert-alert .modalert-content {
     display: block;
     text-align: center;
     font-size: 16px;
@@ -948,61 +948,61 @@
     padding-bottom: 64px;
   }
 
-  .simple-modal.has-tabs.has-icon .simple-content {
+  .modalert-modal.has-tabs.has-icon .modalert-content {
     padding-top: 32px;
     padding-bottom: 32px;
   }
 
-  .simple-modal.has-tabs.has-icon .simple-content .simple-content-content {
+  .modalert-modal.has-tabs.has-icon .modalert-content .modalert-content-content {
     padding-left: 32px;
   }
 
-  .simple-modal.has-tabs.has-icon .simple-content .simple-modal-icon {
+  .modalert-modal.has-tabs.has-icon .modalert-content .modalert-modal-icon {
     margin-bottom: 0;
   }
 
-  .simple-modal:not(.has-content) .simple-modal-icon {
+  .modalert-modal:not(.has-content) .modalert-modal-icon {
     margin-bottom: 0;
   }
 
-  .simple-modal.theme-dark {
+  .modalert-modal.theme-dark {
     background: #182028;
     color: #fff;
   }
 
-  .simple-modal.theme-dark .simple-box-actions .simple-action-close {
+  .modalert-modal.theme-dark .modalert-box-actions .modalert-action-close {
     color: #fff;
   }
 
-  .simple-modal.theme-dark .simple-title {
+  .modalert-modal.theme-dark .modalert-title {
     border-bottom-color: #090c0f;
     box-shadow: 0px 1px 0px #273442;
   }
 
-  .simple-modal.theme-dark ul.simple-modal-tabs li a {
+  .modalert-modal.theme-dark ul.modalert-modal-tabs li a {
     color: #fff;
   }
 
-  .simple-modal.theme-dark ul.simple-modal-tabs li.active a {
+  .modalert-modal.theme-dark ul.modalert-modal-tabs li.active a {
     color: #039BE5;
   }
 
-  .simple-modal.theme-dark ul.simple-modal-tabs li.disabled a {
+  .modalert-modal.theme-dark ul.modalert-modal-tabs li.disabled a {
     color: #3e5368;
   }
 
-  .simple-modal.theme-dark.has-tabs.has-title ul.simple-modal-tabs {
+  .modalert-modal.theme-dark.has-tabs.has-title ul.modalert-modal-tabs {
     border-bottom-color: #090c0f;
     box-shadow: 0px 1px 0px #273442;
   }
 
-  .simple-modal.theme-dark .simple-content+.simple-buttons {
+  .modalert-modal.theme-dark .modalert-content+.modalert-buttons {
     border-top-color: #273442;
     box-shadow: 0px -1px 0px #090c0f;
   }
 
-  .simple-modal .simple-buttons,
-  .simple-modal .simple-content {
+  .modalert-modal .modalert-buttons,
+  .modalert-modal .modalert-content {
     opacity: 0;
     transition-property: transform, opacity;
     transition-duration: 0.3s;
@@ -1010,26 +1010,26 @@
     transition-timing-function: cubic-bezier(0.52, 0.02, 0.19, 1.02);
   }
 
-  .simple-modal .simple-content {
+  .modalert-modal .modalert-content {
     transform: translateY(-8px);
   }
 
-  .simple-modal .simple-buttons {
+  .modalert-modal .modalert-buttons {
     transform: translateY(16px);
   }
 
-  .simple-modal.is-visible {
+  .modalert-modal.is-visible {
     transform: translate(-50%, -50%);
     opacity: 1;
   }
 
-  .simple-modal.is-visible .simple-buttons,
-  .simple-modal.is-visible .simple-content {
+  .modalert-modal.is-visible .modalert-buttons,
+  .modalert-modal.is-visible .modalert-content {
     transform: none;
     opacity: 1;
   }
 
-  .simple-modal.bounce {
+  .modalert-modal.bounce {
     animation-name: bounce;
     animation-duration: 0.3s;
     animation-iteration-count: 2;
@@ -1051,17 +1051,17 @@
   }
 
   @media screen and (max-width: 600px) {
-    .simple-modal {
+    .modalert-modal {
       width: 100%;
       height: 100vh;
       left: 0;
       top: 0;
       transform: scale(0.9);
     }
-    .simple-modal.is-visible {
+    .modalert-modal.is-visible {
       transform: none;
     }
-    .simple-modal .simple-buttons {
+    .modalert-modal .modalert-buttons {
       -moz-box-sizing: border-box;
       box-sizing: border-box;
       position: absolute;
