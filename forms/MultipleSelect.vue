@@ -1,48 +1,34 @@
 <script>
   export default {
-    name: 'multipleSelect',
+    name: 'MultipleSelect',
     data () {
       return {
-        isSelected: false,
         dropdownOpen: false,
         val: [],
-        items: [
-          { val: 1, text: 'option 1', selected: false },
-          { val: 2, text: 'option 2', selected: false },
-          { val: 3, text: 'option 3', selected: false },
-          { val: 4, text: 'option 4', selected: false },
-          { val: 5, text: 'option 5', selected: false },
-          { val: 6, text: 'option 6', selected: false },
-          { val: 7, text: 'option 7', selected: false },
-          { val: 8, text: 'option 8', selected: false }
-        ]
+        option: []
       }
     },
     props: {
-      validation: {
-        type: Object,
-        default: function () {
-          return { $error: false, $touch: function () {} }
+      items: {
+        type: Array,
+        default: () => {
+          return []
         }
       }
     },
     methods: {
-      openDropdown () {
-        this.dropdownOpen = true
+      toggleDropdown () {
+        this.dropdownOpen = !this.dropdownOpen
       },
-      closeDropdown () {
-        this.dropdownOpen = false
-      },
-      setVal (val) {
-        this.val.push(val)
-        this.closeDropdown()
-      },
-      setItemClass (index) {
-        if (this.items[index].selected) {
-          this.items[index].selected = false
+      updateValue (item) {
+        if (this.option.indexOf(item.option) >= 0) {
+          this.option.splice(this.option.indexOf(item.option), 1)
         } else {
-          this.items[index].selected = true
+          this.val.push(item.val)
+          this.option.push(item.option)
         }
+        this.toggleDropdown()
+        this.$emit('selectVal', this.val)
       }
     }
   }
@@ -50,11 +36,13 @@
 
 <template>
   <div>
-    <input class="form-select-simple" @click="openDropdown" cols="30" rows="10" v-model="val" placeholder="Select options">
-    <ul tabindex="-1" @blur="closeDropdown" class="form-select-dropdown" v-if="dropdownOpen">
-      <li :class="{ 'selected': item.selected }" v-for="(item, index) in items" @click="setVal(item.val), setItemClass(index)">{{ item.text }}</li>
+    <input @click="toggleDropdown" v-model="option" placeholder="Select options" readonly="readonly">
+    <ul tabindex="-1" class="dropdown" v-if="dropdownOpen">
+      <li v-for="item in items" @click="updateValue(item)">{{ item.option }}</li>
     </ul>
   </div>
 </template>
 
-<style src="../../assets/themes/default/form.css"></style>
+<style scoped>
+  
+</style>

@@ -1,34 +1,30 @@
 <script>
   export default {
-    name: 'simpleSelect',
+    name: 'SimpleSelect',
     data () {
       return {
         dropdownOpen: false,
-        val: '',
-        items: [
-          { val: 1, text: 'Option 1' },
-          { val: 2, text: 'Option 2' }
-        ]
+        val: [],
+        option: []
       }
     },
     props: {
-      validation: {
-        type: Object,
-        default: function () {
-          return { $error: false, $touch: function () {} }
+      items: {
+        type: Array,
+        default: () => {
+          return []
         }
       }
-    }
+    },
     methods: {
-      openDropdown () {
-        this.dropdownOpen = true
+      toggleDropdown () {
+        this.dropdownOpen = !this.dropdownOpen
       },
-      closeDropdown () {
-        this.dropdownOpen = false
-      },
-      setVal (val) {
-        this.val = val
-        this.closeDropdown()
+      updateValue (item) {
+        this.val = item.val
+        this.option = item.option
+        this.toggleDropdown()
+        this.$emit('selectVal', this.val)
       }
     }
   }
@@ -36,9 +32,9 @@
 
 <template>
   <div>
-    <input @click="openDropdown" cols="30" rows="10" v-model="val" placeholder="Select an option">
-    <ul tabindex="-1" @blur="closeDropdown" class="dropdown" v-if="dropdownOpen">
-        <li v-for="item in items" @click="setVal(item.val)">{{ item.text }}</li>
+    <input @click="toggleDropdown" v-model="option" placeholder="Select an option" readonly="readonly">
+    <ul tabindex="-1" class="dropdown" v-if="dropdownOpen">
+      <li v-for="item in items" @click="updateValue(item)">{{ item.option }}</li>
     </ul>
   </div>
 </template>
