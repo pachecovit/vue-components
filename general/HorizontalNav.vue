@@ -1,21 +1,11 @@
 <script>
   export default {
-    name: 'horizontlNav',
+    name: 'horizontalNav',
     components: {
       Icon
     },
     props: {
       items: {
-        type: Array,
-        default: () => {
-          return []
-        }
-      },
-      multiLevel: {
-        type: Boolean,
-        default: false
-      },
-      subItems: {
         type: Array,
         default: () => {
           return []
@@ -26,15 +16,13 @@
 </script>
 
 <template>
-  <ul>
-    <li v-for="item in this.items"><a href="item.link">{{ item.text }}</a>
-      <ul v-if="multiLevel">
-        <li v-for="subItem in this.subItems"><a href="subItem.link">{{ subItem.item }}</a></li>
+  <ul class="horizontal-nav">
+    <li class="horizontal-nav-item" v-for="item in this.items"><a :href="item.link" :class="{ 'sub-item': item.subItems }">{{ item.name }}</a>
+      <ul class="horizontal-nav-dropdown" v-if="item.subItems">
+        <li class="horizontal-nav-dropdown-item" v-for="subItem in item.subItems"><a href="subItem.link">{{ subItem.name }}</a></li>
       </ul>
     </li>
   </ul>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
